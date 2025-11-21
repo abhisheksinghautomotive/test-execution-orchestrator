@@ -1,7 +1,3 @@
-Below is a clean, concise, production-ready `README.md` for this project, using **very minimal and necessary emojis only**.
-
----
-
 # Distributed Test Execution Orchestrator ⚙️
 
 A lightweight control-plane and worker system for **scheduling, provisioning, executing, and collecting results** for distributed HIL/SIL test benches. Designed for reliability, scalability, and CI integration.
