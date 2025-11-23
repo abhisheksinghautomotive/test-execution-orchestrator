@@ -109,3 +109,7 @@ This project is under active development. Refer to `docs/ARCHITECTURE.md` and sp
 This project is licensed under the MIT License. See the LICENSE file for details.
 
 ---
+
+## Design decisions / ADRs
+
+See the ADRs folder: ./ADRs/
