@@ -1,5 +1,15 @@
 ## [unreleased]
 
+### 🐛 Bug Fixes
+
+- *(ci)* Prevent release workflow loop by guarding against chore(release) commits (#103)
+## [0.3.0] - 2025-11-29
+
+### ⚙️ Miscellaneous Tasks
+
+- *(release)* V0.3.0 (#101)
+## [0.2.0] - 2025-11-29
+
 ### 🚀 Features
 
 - Restructure project layout and add initial API and CLI (#99)
