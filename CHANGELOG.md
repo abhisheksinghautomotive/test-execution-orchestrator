@@ -7,6 +7,7 @@
 ### ⚙️ Miscellaneous Tasks
 
 - *(release)* Remove [ci skip] to allow post-merge workflow (#94)
+- *(release)* V0.1.2 (#96)
 ## [0.1.1] - 2025-11-29
 
 ### 💼 Other
