@@ -1,18 +1,16 @@
 ## [unreleased]
 
-### 🧪 Testing
+### 🚀 Features
 
-- Trigger release workflow (#95)
-
-### ⚙️ Miscellaneous Tasks
-
-- *(release)* Remove [ci skip] to allow post-merge workflow (#94)
-- *(release)* V0.1.2 (#96)
-## [0.1.1] - 2025-11-29
+- Restructure project layout and add initial API and CLI (#99)
 
 ### 💼 Other
 
 - Packaging tool (Poetry vs setuptools) (#85)
+
+### 🧪 Testing
+
+- Trigger release workflow (#95)
 
 ### ⚙️ Miscellaneous Tasks
 
@@ -24,3 +22,6 @@
 - *(release)* Fix branch push collision and add issues permission (#90)
 - *(release)* Fix PR creation by letting create-pull-request handle commits (#92)
 - *(release)* V0.1.1 [ci skip] (#93)
+- *(release)* Remove [ci skip] to allow post-merge workflow (#94)
+- *(release)* V0.1.2 (#96)
+- *(release)* V0.1.3 (#97)
