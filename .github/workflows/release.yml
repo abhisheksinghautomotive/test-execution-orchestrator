@@ -82,67 +82,38 @@ jobs:
           echo "new_version=$newver" >> $GITHUB_OUTPUT
           echo "New version: $newver"
 
-      - name: Commit version bump
-        env:
-          GIT_AUTHOR_NAME: "github-actions[bot]"
-          GIT_AUTHOR_EMAIL: "actions@github.com"
-        run: |
-          git config user.name "$GIT_AUTHOR_NAME"
-          git config user.email "$GIT_AUTHOR_EMAIL"
-          git add pyproject.toml
-          if git diff --staged --quiet; then
-            echo "No version change to commit"
-          else
-            git commit -m "chore(release): v${{ steps.bump_version.outputs.new_version }} [ci skip]" || true
-          fi
-
       - name: Generate changelog (git-cliff)
         run: |
           pip install git-cliff
           git-cliff -o CHANGELOG.md
-          if git status --porcelain | grep -q CHANGELOG.md; then
-            git add CHANGELOG.md
-            git commit -m "chore(changelog): update for v${{ steps.bump_version.outputs.new_version }} [ci skip]" || true
-          else
-            echo "No changelog changes"
-          fi
-
-      - name: Push release branch
-        env:
-          GIT_AUTHOR_NAME: "github-actions[bot]"
-          GIT_AUTHOR_EMAIL: "actions@github.com"
-        run: |
-          branch="release/v${{ steps.bump_version.outputs.new_version }}"
-          echo "Creating and pushing branch: $branch"
-          # Delete local branch if exists
-          git branch -D "$branch" 2>/dev/null || true
-          git checkout -b "$branch"
-          # Force push to handle existing remote branch from previous failed runs
-          git push --force-with-lease --set-upstream origin "$branch"
 
       - name: Create Pull Request
+        id: create_pr
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          add-paths: |
+            pyproject.toml
+            CHANGELOG.md
           commit-message: "chore(release): v${{ steps.bump_version.outputs.new_version }} [ci skip]"
           committer: "github-actions[bot] <actions@github.com>"
           author: "github-actions[bot] <actions@github.com>"
           branch: release/v${{ steps.bump_version.outputs.new_version }}
+          delete-branch: true
           title: "chore(release): v${{ steps.bump_version.outputs.new_version }}"
           body: |
             Automated release PR for v${{ steps.bump_version.outputs.new_version }}.
             
             This PR updates:
-            - `pyproject.toml` version bump
+            - `pyproject.toml` version bump (v${{ steps.bump_version.outputs.current_version }} → v${{ steps.bump_version.outputs.new_version }})
             - `CHANGELOG.md` generated changelog
             
             **Merge this PR to trigger tag creation and release publishing.**
           labels: release
-          delete-branch: true
 
       # Fallback: If PR creation fails (Actions blocked), create an issue
       - name: Create notification issue (if PR creation blocked)
-        if: failure()
+        if: steps.create_pr.outputs.pull-request-number == ''
         uses: actions/github-script@v7
         with:
           script: |
@@ -152,13 +123,13 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: `[Action Required] Manual PR needed for release v${version}`,
-              body: `The release automation pushed branch \`${branch}\` but could not create a PR automatically.
+              body: `The release automation could not create a PR automatically.
               
-              **Please create a PR manually:**
-              - Branch: \`${branch}\`
-              - Target: \`main\`
-              - Label: \`release\`
+              **Action needed:**
+              The version has been bumped in the working tree but needs to be committed to a branch and PR'd.
               
-              [Create PR now](https://github.com/${context.repo.owner}/${context.repo.repo}/compare/main...${branch}?expand=1)`,
+              Please check the workflow logs and create a release PR manually if needed.
+              
+              Target version: v${version}`,
               labels: ['release', 'automation']
             });
