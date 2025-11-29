@@ -67,7 +67,9 @@ jobs:
           pip install poetry
           current=$(poetry version -s)
           echo "current_version=$current" >> $GITHUB_OUTPUT
+          echo "Current version: $current"
           bump=${{ steps.bump.outputs.bump }}
+          echo "Bump type: $bump"
           case "$bump" in
             major) poetry version major ;;
             minor) poetry version minor ;;
@@ -76,8 +78,9 @@ jobs:
           esac
           newver=$(poetry version -s)
           echo "new_version=$newver" >> $GITHUB_OUTPUT
+          echo "New version: $newver"
 
-      - name: Commit version bump & tag
+      - name: Commit version bump
         env:
           GIT_AUTHOR_NAME: "github-actions[bot]"
           GIT_AUTHOR_EMAIL: "actions@github.com"
@@ -88,9 +91,7 @@ jobs:
           if git diff --staged --quiet; then
             echo "No version change to commit"
           else
-            git commit -m "chore(release): v${{ steps.bump_version.outputs.new_version }} [ci skip]" || true
-            git tag "v${{ steps.bump_version.outputs.new_version }}"
-            git push origin HEAD:main --follow-tags
+            git commit -m "chore(release): v${{ steps.bump_version.outputs.new_version }}" || true
           fi
 
       - name: Generate changelog (git-cliff)
@@ -99,36 +100,27 @@ jobs:
           git-cliff -o CHANGELOG.md
           if git status --porcelain | grep -q CHANGELOG.md; then
             git add CHANGELOG.md
-            git commit -m "chore(changelog): update for v${{ steps.bump_version.outputs.new_version }} [ci skip]" || true
-            git push origin HEAD:main
+            git commit -m "chore(changelog): update for v${{ steps.bump_version.outputs.new_version }}" || true
           else
             echo "No changelog changes"
           fi
 
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
         with:
-          tag_name: "v${{ steps.bump_version.outputs.new_version }}"
-          name: "v${{ steps.bump_version.outputs.new_version }}"
-          body_path: CHANGELOG.md
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build package
-        run: |
-          pip install build
-          python -m build
-
-      - name: Publish package (Poetry)
-        env:
-          POETRY_REPO: pypi
-          POETRY_TOKEN: ${{ secrets.PUBLISH_TOKEN || '' }}
-        run: |
-          if [ -z "$POETRY_TOKEN" ]; then
-            echo "PUBLISH_TOKEN not set, skipping publish"
-            exit 0
-          fi
-          pip install poetry
-          # configure repository token for Poetry
-          poetry config http-basic.$POETRY_REPO __token__ $POETRY_TOKEN
-          poetry publish -r $POETRY_REPO --build
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore(release): v${{ steps.bump_version.outputs.new_version }}"
+          committer: "github-actions[bot] <actions@github.com>"
+          author: "github-actions[bot] <actions@github.com>"
+          branch: release/v${{ steps.bump_version.outputs.new_version }}
+          title: "chore(release): v${{ steps.bump_version.outputs.new_version }}"
+          body: |
+            Automated release PR for v${{ steps.bump_version.outputs.new_version }}.
+            
+            This PR updates:
+            - `pyproject.toml` version bump
+            - `CHANGELOG.md` generated changelog
+            
+            **Merge this PR to trigger tag creation and release publishing.**
+          labels: release
+          delete-branch: true
