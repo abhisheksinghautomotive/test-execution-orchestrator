@@ -2,6 +2,11 @@
 
 ### 🚀 Features
 
+- *(docs)* Add version badge to README (#114)
+## [0.1.0] - 2025-11-29
+
+### 🚀 Features
+
 - Restructure project layout and add initial API and CLI (#99)
 - *(api)* Add version endpoint to expose API version (#107)
 
@@ -40,3 +45,4 @@
 - *(release)* V0.2.0 [ci skip] (#108)
 - *(release)* V0.3.0 (#111)
 - Reset version to 0.0.0 and update RELEASE.md (#112)
+- *(release)* V0.1.0 (#113)
