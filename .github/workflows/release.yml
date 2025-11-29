@@ -12,9 +12,9 @@ permissions:
 
 jobs:
   release:
-    # Skip if commit already contains [ci skip] to prevent loops
+    # Skip if commit already contains [ci skip] or is a release commit to prevent loops
     # Branch protection requires PRs, so this workflow creates a release branch + PR
-    if: ${{ !contains(github.event.head_commit.message, '[ci skip]') }}
+    if: ${{ !contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, 'chore(release):') }}
     runs-on: ubuntu-latest
     env:
       PYTHON_VERSION: '3.11'
@@ -95,7 +95,7 @@ jobs:
           add-paths: |
             pyproject.toml
             CHANGELOG.md
-          commit-message: "chore(release): v${{ steps.bump_version.outputs.new_version }}"
+          commit-message: "chore(release): v${{ steps.bump_version.outputs.new_version }} [ci skip]"
           committer: "github-actions[bot] <actions@github.com>"
           author: "github-actions[bot] <actions@github.com>"
           branch: release/v${{ steps.bump_version.outputs.new_version }}
