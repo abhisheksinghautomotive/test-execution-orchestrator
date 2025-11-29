@@ -2,6 +2,11 @@
 
 ### 🚀 Features
 
+- *(api)* Add version endpoint to expose API version (#107)
+## [0.1.0] - 2025-11-29
+
+### 🚀 Features
+
 - Restructure project layout and add initial API and CLI (#99)
 
 ### 🐛 Bug Fixes
@@ -33,3 +38,4 @@
 - *(release)* V0.3.0 (#101)
 - *(release)* V0.3.1 [ci skip] (#104)
 - Reset to v0.0.0 for fresh start (#105)
+- *(release)* V0.1.0 [ci skip] (#106)
