@@ -8,6 +8,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  issues: write
 
 jobs:
   release:
@@ -113,8 +114,11 @@ jobs:
         run: |
           branch="release/v${{ steps.bump_version.outputs.new_version }}"
           echo "Creating and pushing branch: $branch"
+          # Delete local branch if exists
+          git branch -D "$branch" 2>/dev/null || true
           git checkout -b "$branch"
-          git push --set-upstream origin "$branch"
+          # Force push to handle existing remote branch from previous failed runs
+          git push --force-with-lease --set-upstream origin "$branch"
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
