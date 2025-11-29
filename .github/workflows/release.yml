@@ -12,9 +12,9 @@ permissions:
 
 jobs:
   release:
-    # Skip if commit already contains [ci skip] or is a release commit to prevent loops
+    # Skip if this is a release commit to prevent loops
     # Branch protection requires PRs, so this workflow creates a release branch + PR
-    if: ${{ !contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, 'chore(release):') }}
+    if: ${{ !contains(github.event.head_commit.message, 'chore(release):') }}
     runs-on: ubuntu-latest
     env:
       PYTHON_VERSION: '3.11'
