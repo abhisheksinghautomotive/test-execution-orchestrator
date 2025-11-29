@@ -1,0 +1,34 @@
+{
+  "templates": {
+    "fix_template": {
+      "purpose": "Minimal patch + test for bugfix",
+      "prompt": "Identify the failing unit test or create one that reproduces the bug. Provide a minimal code patch (file path + small diff) and a pytest unit test that fails before the change and passes after. Commit message must follow Conventional Commits: 'fix(<scope>): short description'. Keep changes minimal and include structured logs when relevant.",
+      "max_tokens": 800
+    },
+    "feature_template": {
+      "purpose": "Small feature that is self-contained",
+      "prompt": "Implement the requested feature with minimal surface area, add unit tests, and update docs if required. Provide the files changed and a short PR description (<=3 lines). Use 'feat(<scope>): short description' commit message.",
+      "max_tokens": 1200
+    },
+    "ci_template": {
+      "purpose": "CI workflow change",
+      "prompt": "Provide a minimal GitHub Actions workflow or update to existing workflow. Ensure steps are idempotent, include cache keys where relevant, and reference tools from pyproject.toml. Add short rationale (<2 lines).",
+      "max_tokens": 400
+    },
+    "commit_message_template": {
+      "purpose": "Generate Conventional Commit message",
+      "prompt": "Given changes summary and scope, output a one-line Conventional Commit header and an optional 1-2 line body describing rationale and references to issues. Keep body <= 2 lines.",
+      "max_tokens": 120
+    },
+    "test_template": {
+      "purpose": "Unit test generator",
+      "prompt": "Generate a focused pytest unit test for the given function/class. Use fixtures present in tests/ if available; otherwise create minimal fixtures. Avoid external services; use mocks for IO and network.",
+      "max_tokens": 300
+    },
+    "explain_patch_template": {
+      "purpose": "Short explanation for PR",
+      "prompt": "Summarize the patch in 2-3 bullet points: what changed, why, and test coverage. Include references to ADRs if design decisions are relevant.",
+      "max_tokens": 150
+    }
+  }
+}
