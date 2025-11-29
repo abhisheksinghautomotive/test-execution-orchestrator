@@ -2,6 +2,8 @@
 
 A lightweight control-plane and worker system for **scheduling, provisioning, executing, and collecting results** for distributed HIL/SIL test benches. Designed for reliability, scalability, and CI integration.
 
+[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/abhisheksinghautomotive/test-execution-orchestrator/releases)
+
 ---
 
 ## Overview
