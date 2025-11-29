@@ -95,7 +95,7 @@ jobs:
           add-paths: |
             pyproject.toml
             CHANGELOG.md
-          commit-message: "chore(release): v${{ steps.bump_version.outputs.new_version }} [ci skip]"
+          commit-message: "chore(release): v${{ steps.bump_version.outputs.new_version }}"
           committer: "github-actions[bot] <actions@github.com>"
           author: "github-actions[bot] <actions@github.com>"
           branch: release/v${{ steps.bump_version.outputs.new_version }}
