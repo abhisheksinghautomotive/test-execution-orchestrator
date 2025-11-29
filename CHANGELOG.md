@@ -3,6 +3,15 @@
 ### 🚀 Features
 
 - *(api)* Add version endpoint to expose API version (#107)
+
+### 🐛 Bug Fixes
+
+- *(ci)* Remove [ci skip] to allow post-merge workflow to create releases (#109)
+- *(ci)* Remove skiip condition to streamline release workflow (#110)
+
+### ⚙️ Miscellaneous Tasks
+
+- *(release)* V0.2.0 [ci skip] (#108)
 ## [0.1.0] - 2025-11-29
 
 ### 🚀 Features
