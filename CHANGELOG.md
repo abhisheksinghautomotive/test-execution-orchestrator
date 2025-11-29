@@ -25,3 +25,4 @@
 - *(release)* Remove [ci skip] to allow post-merge workflow (#94)
 - *(release)* V0.1.2 (#96)
 - *(release)* V0.1.3 (#97)
+- *(release)* V0.2.0 (#100)
