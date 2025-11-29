@@ -1,5 +1,14 @@
 ## [unreleased]
 
+### 🧪 Testing
+
+- Trigger release workflow (#95)
+
+### ⚙️ Miscellaneous Tasks
+
+- *(release)* Remove [ci skip] to allow post-merge workflow (#94)
+## [0.1.1] - 2025-11-29
+
 ### 💼 Other
 
 - Packaging tool (Poetry vs setuptools) (#85)
@@ -13,3 +22,4 @@
 - *(release)* Update post-merge release workflow to trigger on version bump commits and improve tagging logic (#89)
 - *(release)* Fix branch push collision and add issues permission (#90)
 - *(release)* Fix PR creation by letting create-pull-request handle commits (#92)
+- *(release)* V0.1.1 [ci skip] (#93)
