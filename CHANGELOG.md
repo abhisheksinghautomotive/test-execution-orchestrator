@@ -1,5 +1,10 @@
 ## [unreleased]
 
+### ⚙️ Miscellaneous Tasks
+
+- *(release)* V0.1.3 (#97)
+## [0.1.2] - 2025-11-29
+
 ### 🧪 Testing
 
 - Trigger release workflow (#95)
