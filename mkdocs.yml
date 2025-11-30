@@ -1,0 +1,23 @@
+site_name: test-execution-orchestrator
+site_description: "Distributed Test Execution Orchestrator for HIL/SIL bench scheduling, execution, and artifact management."
+site_author: Abhishek
+repo_name: test-execution-orchestrator
+nav:
+  - Home: index.md
+  - Getting Started: usage.md
+  - Testing: testing.md
+  - Contributing: contributing.md
+  - ADRs: adr.md
+  - CONVENTIONAL_COMMITS: conventional_commits.md
+theme:
+  name: material
+markdown_extensions:
+  - admonition
+  - toc:
+      permalink: true
+plugins:
+  - search
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/abhisheksinghautomotive/test-execution-orchestrator
