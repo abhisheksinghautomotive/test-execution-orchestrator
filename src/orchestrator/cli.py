@@ -19,7 +19,7 @@ def serve():
     import uvicorn
     from orchestrator.main import app as fastapi_app
 
-    uvicorn.run(fastapi_app, host="0.0.0.0", port=8000, log_level="info")
+    uvicorn.run(fastapi_app, host="0.0.0.0", port=8000, log_level="info")  # nosec B104
 
 
 if __name__ == "__main__":

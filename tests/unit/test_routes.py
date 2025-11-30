@@ -1,0 +1,14 @@
+"""Tests for API routes."""
+
+from fastapi.testclient import TestClient
+
+from orchestrator.main import app
+
+client = TestClient(app)
+
+
+def test_ping():
+    """Test ping endpoint."""
+    response = client.get("/ping")
+    assert response.status_code == 200
+    assert response.json() == {"pong": True}
