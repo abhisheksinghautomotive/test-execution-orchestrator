@@ -180,6 +180,7 @@ jobs:
           name: gitleaks-report-${{ matrix.python-version }}
           path: gitleaks-report-${{ matrix.python-version }}.json
           if-no-files-found: ignore
+
       - name: Enforce security policy
         if: always()
         run: |

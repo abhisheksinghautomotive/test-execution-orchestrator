@@ -8,7 +8,7 @@ license = "MIT"
 packages = [{ include = "orchestrator", from = "src" }]
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = ">=3.9,<3.12"
 fastapi = ">=0.115.0"
 uvicorn = { extras = ["standard"], version = "^0.30.0" }
 pydantic = "^2.0"
@@ -26,6 +26,7 @@ bandit = "1.8.6"
 pip-audit = "^2.7.0"
 pre-commit = "3.7.0"
 httpx = "^0.28.1"
+types-pyyaml = "^6.0.12.20250915"
 
 [tool.ruff]
 line-length = 88
