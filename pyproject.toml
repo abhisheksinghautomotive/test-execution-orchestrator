@@ -27,6 +27,8 @@ pip-audit = "^2.7.0"
 pre-commit = "3.7.0"
 httpx = "^0.28.1"
 types-pyyaml = "^6.0.12.20250915"
+mkdocs = "^1.5"
+mkdocs-material = "^9.0"
 
 [tool.ruff]
 line-length = 88

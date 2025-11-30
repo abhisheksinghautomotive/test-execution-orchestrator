@@ -33,16 +33,44 @@ Your commit messages determine the version bump:
 - **MINOR** (0.X.0): `feat:`
 - **MAJOR** (X.0.0): Any commit with `BREAKING CHANGE:` in body or `!` after type (e.g., `feat!:`)
 
+### ⚠️ IMPORTANT: When Releases Are Triggered
+
+**Every merge to `main` triggers a release** unless the commit message starts with `chore(release):`.
+
+#### Commits that TRIGGER releases:
+```bash
+feat(api): add new endpoint           # ✅ Creates MINOR release
+fix(worker): handle timeout           # ✅ Creates PATCH release
+docs: update README                   # ✅ Creates PATCH release
+ci(pr-checks): add workflow          # ✅ Creates PATCH release
+refactor(core): simplify logic       # ✅ Creates PATCH release
+```
+
+#### Commits that DO NOT trigger releases:
+```bash
+chore(release): v0.2.1               # ❌ No release (release commit itself)
+```
+
+### 💡 How to Avoid Triggering a Release
+
+If you want to merge changes WITHOUT triggering a release:
+
+1. **Accumulate multiple features** - Keep working in feature branches, only merge when ready to release
+2. **Use draft PRs** - Mark PRs as draft until ready to release
+3. **Manual intervention** - Close the auto-generated release PR if you don't want that release
+
+**Note:** There's currently no commit prefix that merges to main without triggering a release workflow. Every non-release merge initiates the release process.
+
 ### Example Commits
 
 ```bash
-# PATCH bump
+# PATCH bump (triggered immediately on merge)
 git commit -m "fix(api): correct timeout handling"
 
-# MINOR bump
+# MINOR bump (triggered immediately on merge)
 git commit -m "feat(worker): add retry mechanism"
 
-# MAJOR bump
+# MAJOR bump (triggered immediately on merge)
 git commit -m "feat!: change API response format"
 # or
 git commit -m "feat: new API
@@ -72,14 +100,21 @@ gh pr create --title "feat(api): add new endpoint" \
 
 ### 3. Merge Feature PR
 
+⚠️ **Important:** Merging to `main` immediately triggers a release workflow!
+
 After approval and CI passes, merge the PR. **Stage 1** triggers automatically:
 - ✅ Release workflow calculates version (e.g., `v0.2.0`)
 - ✅ Creates release branch `release/v0.2.0`
 - ✅ Opens release PR with version bump
 
+**Options if you don't want to release yet:**
+- Keep the PR as draft until ready
+- Close the auto-generated release PR (you can create it manually later)
+- Wait to merge until you have multiple features ready
+
 ### 4. Merge Release PR
 
-Review and merge the release PR. **Stage 2** triggers automatically:
+When ready to release, merge the release PR. **Stage 2** triggers automatically:
 - ✅ Post-merge workflow creates tag `v0.2.0`
 - ✅ Creates GitHub Release with changelog
 - ✅ No new release PR is created (loop prevention)
@@ -139,6 +174,11 @@ Each release creates:
 
 ## Troubleshooting
 
+### Release PR created but I don't want to release yet
+- **Close the release PR** - It won't create a tag/release until merged
+- **Keep the PR open** - You can merge multiple features, then merge the release PR later
+- **Note:** The release PR will need manual updates if you merge more features before releasing
+
 ### Release PR not created after feature merge
 - Check commit message follows conventional commits format
 - Verify commit doesn't contain `chore(release):` (should only be in release commits)
@@ -152,6 +192,10 @@ Each release creates:
 ### Multiple release PRs created
 - Should not happen due to loop prevention
 - If it does, check that release commits have `chore(release):` prefix
+
+### I merged by accident and triggered a release
+- **Before merging release PR:** Simply close the release PR - no tag/release created yet
+- **After merging release PR:** Tag and release are created; you can delete the release and tag manually if needed
 
 ## Manual Version Bump (Not Recommended)
 
