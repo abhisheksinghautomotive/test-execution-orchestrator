@@ -1,0 +1,15 @@
+# Security Policy Configuration
+# Defines severity thresholds and rules for security scanning
+
+bandit:
+  max_high: 0
+  max_medium: 0
+  max_low: 5
+
+pip_audit:
+  max_high: 0
+  max_medium: 0
+  max_low: 5
+
+gitleaks:
+  max_findings: 0

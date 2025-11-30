@@ -1,0 +1,228 @@
+name: PR Checks
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+  actions: read
+
+env:
+  POETRY_VERSION: "1.6.1"
+  CACHE_KEY_PREFIX: "pvl-pr-checks"
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      cache-hit: ${{ steps.cache.outputs.cache-hit }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Cache Poetry & pip
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/pypoetry
+            ~/.cache/pip
+          key: ${{ env.CACHE_KEY_PREFIX }}-poetry-${{ github.ref }}-${{ matrix.python-version || 'none' }}
+          restore-keys: |
+            ${{ env.CACHE_KEY_PREFIX }}-poetry-
+
+  checks:
+    needs: setup
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10", "3.11"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip"
+
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          python -m pip install --upgrade pip
+          export PATH="$HOME/.local/bin:$PATH"
+          poetry --version
+
+      - name: Install project (Poetry)
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          poetry config virtualenvs.create true
+          poetry install --no-interaction --no-ansi
+        env:
+          POETRY_VIRTUALENVS_IN_PROJECT: "true"
+
+      - name: Run pre-commit (format/lint fixes locally)
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          poetry run pre-commit run --all-files
+
+      - name: Black (format check)
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          poetry run black --check src scripts tests
+
+      - name: Ruff (lint)
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          poetry run ruff check src scripts tests
+
+      - name: Mypy (type checking)
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          poetry run mypy src scripts
+
+      - name: Run unit tests (pytest)
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          poetry run pytest tests/unit --maxfail=1 \
+            --cov=src --cov-report=xml --cov-report=term-missing
+
+      - name: Ensure coverage.xml exists
+        if: always()
+        run: |
+          if [ ! -f coverage.xml ]; then
+            echo "coverage.xml not found — ensure pytest produced coverage.xml"
+            exit 1
+          fi
+
+      - name: Check coverage threshold
+        if: always()
+        run: |
+          python - <<'PY'
+          import xml.etree.ElementTree as ET, sys
+          try:
+              tree = ET.parse('coverage.xml')
+          except Exception as e:
+              print(f"Failed to parse coverage.xml: {e}", file=sys.stderr)
+              sys.exit(1)
+          root = tree.getroot()
+          total = root.find('.//totals')
+          if total is not None and total.get('covered') and total.get('num_statements'):
+            covered = int(total.get('covered'))
+            total_n = int(total.get('num_statements'))
+            pct = (covered/total_n*100) if total_n else 0.0
+          else:
+            pct = float(root.get('line-rate', '0.0')) * 100.0
+          print(f"Total coverage: {pct:.2f}%")
+          if pct < 80.0:
+            print("Coverage below 80% — failing build")
+            sys.exit(1)
+          print("Coverage threshold met")
+          PY
+
+      - name: Upload coverage (artifact)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report-${{ matrix.python-version }}
+          path: coverage.xml
+
+      - name: Bandit (SAST)
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          poetry run bandit -r src scripts -f json -o "bandit-output-${{ matrix.python-version }}.json" || true
+
+      - name: Upload bandit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bandit-report-${{ matrix.python-version }}
+          path: bandit-output-${{ matrix.python-version }}.json
+
+      - name: Export requirements for dependency scan
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          # Poetry v1.6+ compatible export including dev dependencies
+          poetry export -f requirements.txt --with dev --output ci-requirements.txt --without-hashes
+
+      - name: Dependency scan (pip-audit)
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          python -m pip install pip-audit
+          # Use python -m pip_audit to ensure CLI flags supported, output JSON per matrix
+          python -m pip_audit --file ci-requirements.txt --format json -o "pip-audit-${{ matrix.python-version }}.json" || true
+
+      - name: Upload pip-audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pip-audit-report-${{ matrix.python-version }}
+          path: pip-audit-${{ matrix.python-version }}.json
+          if-no-files-found: ignore
+
+      - name: Gitleaks (PR diff scan)
+        uses: zricethezav/gitleaks-action@v2.1.0
+        with:
+          args: "--path=. --report-format=json --report-path=gitleaks-report-${{ matrix.python-version }}.json"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload gitleaks report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gitleaks-report-${{ matrix.python-version }}
+          path: gitleaks-report-${{ matrix.python-version }}.json
+          if-no-files-found: ignore
+
+      - name: Enforce security policy
+        if: always()
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          python -m pip install pyyaml || true
+          python scripts/enforce_security_policy.py \
+            --bandit "bandit-output-${{ matrix.python-version }}.json" \
+            --pip-audit "pip-audit-${{ matrix.python-version }}.json" \
+            --gitleaks "gitleaks-report-${{ matrix.python-version }}.json" \
+            --policy .github/security/policy.yml \
+            --allowlist .github/security/allowlist.yml
+        env:
+          CI: true
+
+      - name: Upload dependency report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-report-${{ matrix.python-version }}
+          path: ci-requirements.txt
+
+      - name: Debug artifacts
+        if: always()
+        run: |
+          echo "Final artifact check for matrix: ${{ matrix.python-version }}"
+          pwd
+          ls -la .
+          echo "---"
+          echo "Checking for expected artifacts..."
+          for f in \
+            coverage.xml \
+            "bandit-output-${{ matrix.python-version }}.json" \
+            "pip-audit-${{ matrix.python-version }}.json" \
+            "gitleaks-report-${{ matrix.python-version }}.json" \
+            ci-requirements.txt
+          do
+            if [ -f "$f" ]; then
+              echo "FOUND: $f"
+            else
+              echo "MISSING: $f"
+            fi
+          done
+
+    outputs:
+      checks-name: ${{ job.status }}

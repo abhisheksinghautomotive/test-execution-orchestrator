@@ -1,0 +1,19 @@
+# Security Allowlist
+# Exceptions for known false positives or accepted risks
+
+bandit:
+  # Example: B104 - hardcoded bind to 0.0.0.0 in development server
+  - id: B104
+    file: src/orchestrator/cli.py
+    reason: "Intentional binding to 0.0.0.0 for local development server"
+
+pip_audit:
+  # Add CVE exceptions here if needed
+  # - cve: CVE-XXXX-XXXX
+  #   package: package-name
+  #   reason: "Explanation"
+
+gitleaks:
+  # Add secret exceptions here if needed
+  # - fingerprint: "abc123"
+  #   reason: "Test data, not a real secret"

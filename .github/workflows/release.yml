@@ -103,11 +103,11 @@ jobs:
           title: "chore(release): v${{ steps.bump_version.outputs.new_version }}"
           body: |
             Automated release PR for v${{ steps.bump_version.outputs.new_version }}.
-            
+
             This PR updates:
             - `pyproject.toml` version bump (v${{ steps.bump_version.outputs.current_version }} → v${{ steps.bump_version.outputs.new_version }})
             - `CHANGELOG.md` generated changelog
-            
+
             **Merge this PR to trigger tag creation and release publishing.**
           labels: release
 
@@ -124,12 +124,12 @@ jobs:
               repo: context.repo.repo,
               title: `[Action Required] Manual PR needed for release v${version}`,
               body: `The release automation could not create a PR automatically.
-              
+
               **Action needed:**
               The version has been bumped in the working tree but needs to be committed to a branch and PR'd.
-              
+
               Please check the workflow logs and create a release PR manually if needed.
-              
+
               Target version: v${version}`,
               labels: ['release', 'automation']
             });
