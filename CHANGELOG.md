@@ -1,8 +1,14 @@
 ## [unreleased]
 
+### 📚 Documentation
+
+- Add project documentation and MkDocs setup (#118)
+## [0.2.1] - 2025-11-30
+
 ### ⚙️ Miscellaneous Tasks
 
 - *(pr-checks)* Add PR checks workflow (non-release change) (#116)
+- *(release)* V0.2.1 (#117)
 ## [0.2.0] - 2025-11-29
 
 ### 🚀 Features
