@@ -39,7 +39,7 @@ Your commit messages determine the version bump:
 # PATCH bump
 git commit -m "fix(api): correct timeout handling"
 
-# MINOR bump  
+# MINOR bump
 git commit -m "feat(worker): add retry mechanism"
 
 # MAJOR bump
@@ -166,4 +166,3 @@ git commit -m "chore(release): v0.3.0"
 
 # This will trigger tag/release creation but NOT a new release PR
 ```
-

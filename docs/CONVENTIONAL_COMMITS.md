@@ -64,10 +64,10 @@ fix(scheduler): correct bench allocation logic
 
 ## Examples
 
-feat(cli): add run command  
-fix(worker): handle missing artifacts gracefully  
-docs: update architecture overview  
-refactor(api): extract validation module  
-perf(queue): reduce lock contention  
-ci: add semantic release workflow  
+feat(cli): add run command
+fix(worker): handle missing artifacts gracefully
+docs: update architecture overview
+refactor(api): extract validation module
+perf(queue): reduce lock contention
+ci: add semantic release workflow
 revert: revert feat(cli) due to regression
