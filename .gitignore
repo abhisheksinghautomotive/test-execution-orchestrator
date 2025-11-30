@@ -51,6 +51,11 @@ coverage.xml
 .pytest_cache/
 cover/
 
+# Security scan outputs
+bandit-output.json
+pip-audit-output.json
+gitleaks-report.json
+
 # Translations
 *.mo
 *.pot
