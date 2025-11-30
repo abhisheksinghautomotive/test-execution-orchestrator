@@ -1,8 +1,17 @@
 ## [unreleased]
 
+### ⚙️ Miscellaneous Tasks
+
+- *(pr-checks)* Add PR checks workflow (non-release change) (#116)
+## [0.2.0] - 2025-11-29
+
 ### 🚀 Features
 
 - *(docs)* Add version badge to README (#114)
+
+### ⚙️ Miscellaneous Tasks
+
+- *(release)* V0.2.0 (#115)
 ## [0.1.0] - 2025-11-29
 
 ### 🚀 Features
