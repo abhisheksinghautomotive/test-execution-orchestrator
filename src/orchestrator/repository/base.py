@@ -1,0 +1,13 @@
+from __future__ import annotations
+from typing import Protocol, Iterable, Optional
+from orchestrator.models.reservation import Reservation, ReservationCreate
+
+
+class ReservationRepository(Protocol):
+    def create(self, payload: ReservationCreate) -> Reservation: ...
+
+    def get(self, reservation_id: str) -> Optional[Reservation]: ...
+
+    def list(self, limit: int = 100) -> Iterable[Reservation]: ...
+
+    def delete(self, reservation_id: str) -> bool: ...
