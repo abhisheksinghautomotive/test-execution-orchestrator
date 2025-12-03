@@ -1,8 +1,9 @@
+from typing import Optional
 from orchestrator.repository.in_memory import InMemoryReservationRepo
 from orchestrator.repository.base import ReservationRepository
 
 # Simple global repo instance for local/dev use.
-_repo: ReservationRepository | None = None
+_repo: Optional[ReservationRepository] = None
 
 
 def get_repo() -> ReservationRepository:
