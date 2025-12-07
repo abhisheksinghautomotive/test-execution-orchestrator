@@ -1,3 +1,13 @@
+## [unreleased]
+
+### 🚀 Features
+
+- *(executions)* Implement execution management API and integrate with reservations (#126)
+## [0.2.4] - 2025-12-07
+
+### ⚙️ Miscellaneous Tasks
+
+- *(release)* V0.2.4 (#125)
 ## [0.2.3] - 2025-12-07
 
 ### 🐛 Bug Fixes
