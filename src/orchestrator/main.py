@@ -1,27 +1,13 @@
-"""FastAPI application entrypoint."""
-
 from fastapi import FastAPI
+from orchestrator.api.reservations import router as reservations_router
+from orchestrator.api.routes import router as routes_router
 
-from orchestrator import __version__
-from orchestrator.api.routes import router
+app = FastAPI(title="Test Execution Orchestrator - API (dev)")
 
-app = FastAPI(
-    title="Test Execution Orchestrator",
-    description="Distributed Test Execution Orchestrator for HIL/SIL bench scheduling and execution",
-    version=__version__,
-)
-
-# Include API routes
-app.include_router(router)
+app.include_router(reservations_router)
+app.include_router(routes_router)
 
 
-@app.get("/health", tags=["health"])
+@app.get("/health")
 def health():
-    """Health check endpoint."""
     return {"status": "ok"}
-
-
-@app.get("/version", tags=["info"])
-def version():
-    """Get API version."""
-    return {"version": __version__}
