@@ -1,8 +1,22 @@
 ## [unreleased]
 
+### 🐛 Bug Fixes
+
+- *(api)* Add /version endpoint to return package version and satisfy unit tests (#122)
+
+### ⚙️ Miscellaneous Tasks
+
+- *(release)* Removed bandit report and added the reports file type in gitignore (#120)
+- *(release)* Updated version batch in README (#121)
+## [0.2.2] - 2025-11-30
+
 ### 📚 Documentation
 
 - Add project documentation and MkDocs setup (#118)
+
+### ⚙️ Miscellaneous Tasks
+
+- *(release)* V0.2.2 (#119)
 ## [0.2.1] - 2025-11-30
 
 ### ⚙️ Miscellaneous Tasks
