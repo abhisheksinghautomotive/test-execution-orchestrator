@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "test-execution-orchestrator"
-version = "0.2.4"
+version = "0.3.0"
 description = "Distributed Test Execution Orchestrator for HIL/SIL bench scheduling, execution, and artifact management."
 authors = ["Abhishek <you@example.com>"]
 readme = "README.md"
