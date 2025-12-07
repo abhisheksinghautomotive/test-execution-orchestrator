@@ -58,3 +58,72 @@ def test_create_start_complete_execution():
     assert r.status_code == 200
     items = r.json()
     assert any(it["id"] == eid for it in items)
+
+
+def test_get_nonexistent_execution():
+    """Test getting an execution that doesn't exist returns 404."""
+    r = client.get("/executions/nonexistent-id")
+    assert r.status_code == 404
+    assert "not found" in r.json()["detail"]
+
+
+def test_start_nonexistent_execution():
+    """Test starting an execution that doesn't exist returns 404."""
+    r = client.post("/executions/nonexistent-id/start")
+    assert r.status_code == 404
+    assert "not found" in r.json()["detail"]
+
+
+def test_stop_nonexistent_execution():
+    """Test stopping an execution that doesn't exist returns 404."""
+    r = client.post("/executions/nonexistent-id/stop")
+    assert r.status_code == 404
+    assert "not found" in r.json()["detail"]
+
+
+def test_stop_running_execution():
+    """Test stopping a running execution."""
+    # Create reservation
+    start = iso_now()
+    end = (
+        (datetime.now(timezone.utc) + timedelta(hours=1))
+        .replace(microsecond=0)
+        .isoformat()
+    )
+    res = client.post(
+        "/reservations",
+        json={"user_id": "tester", "bench_type": "SIL", "start": start, "end": end},
+    )
+    assert res.status_code == 201
+    rid = res.json()["id"]
+
+    # Create execution
+    r = client.post(
+        "/executions",
+        json={
+            "reservation_id": rid,
+            "commit_sha": "abc123",
+            "test_suite": "integration",
+        },
+    )
+    assert r.status_code == 201
+    eid = r.json()["id"]
+
+    # Start execution
+    r = client.post(f"/executions/{eid}/start")
+    assert r.status_code == 200
+
+    # Stop execution (service simulates instant completion, but we can still call stop)
+    r = client.post(f"/executions/{eid}/stop")
+    assert r.status_code == 200
+    # Should return the execution (even if already completed)
+    assert r.json()["id"] == eid
+
+
+def test_list_executions_with_limit():
+    """Test listing executions with limit parameter."""
+    r = client.get("/executions?limit=5")
+    assert r.status_code == 200
+    items = r.json()
+    assert isinstance(items, list)
+    assert len(items) <= 5

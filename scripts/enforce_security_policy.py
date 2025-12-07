@@ -136,12 +136,17 @@ def check_pip_audit(
     allowed_cves = allowlist.get("pip_audit", [])
 
     for vuln in vulnerabilities:
-        # Check if CVE is in allowlist
+        # Check if CVE/ID is in allowlist
         is_allowed = False
+        vuln_id = vuln.get("id")
+        vuln_pkg = vuln.get("package", "")
         for allowed in allowed_cves:
-            if allowed.get("cve") == vuln.get("id"):
+            # Support both 'cve' and 'id' keys for flexibility
+            allowed_id = allowed.get("id") or allowed.get("cve")
+            allowed_pkg = allowed.get("package", "")
+            if allowed_id == vuln_id and (not allowed_pkg or allowed_pkg == vuln_pkg):
                 print(
-                    f"INFO: CVE {vuln['id']} in {vuln.get('package')} is allowlisted: {allowed.get('reason')}"
+                    f"INFO: Vulnerability {vuln_id} in {vuln_pkg} is allowlisted: {allowed.get('reason')}"
                 )
                 is_allowed = True
                 break

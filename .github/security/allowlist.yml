@@ -9,9 +9,12 @@ bandit:
 
 pip_audit:
   # Add CVE exceptions here if needed
-  # - cve: CVE-XXXX-XXXX
-  #   package: package-name
-  #   reason: "Explanation"
+  - id: GHSA-wj6h-64fc-37mp
+    package: ecdsa
+    reason: "Timing attack on P-256 curve - out of scope for upstream project, no fix available"
+  - id: PYSEC-2023-243
+    package: localstack
+    reason: "Dev dependency for local testing only, not used in production"
 
 gitleaks:
   # Add secret exceptions here if needed

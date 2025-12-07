@@ -112,8 +112,8 @@ run_step "Coverage threshold (>=80%)" poetry run python scripts/check_coverage.p
 # 9. Bandit (SAST)
 run_step "Bandit (SAST)" poetry run bandit -r src scripts || true
 
-# 10. pip-audit (SCA)
-run_step "pip-audit (SCA)" poetry run pip-audit --progress-spinner off || true
+# 10. pip-audit (SCA) - informative only, allowlisted vulnerabilities are acceptable
+run_step "pip-audit (SCA)" poetry run pip-audit --progress-spinner off || echo "Note: pip-audit found vulnerabilities (see allowlist)"
 
 # 11. pre-commit: install hooks and run (informative)
 run_step "pre-commit install" poetry run pre-commit install || true
