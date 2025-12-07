@@ -1,4 +1,4 @@
-## [unreleased]
+## [0.2.3] - 2025-12-07
 
 ### 🐛 Bug Fixes
 
@@ -8,6 +8,7 @@
 
 - *(release)* Removed bandit report and added the reports file type in gitignore (#120)
 - *(release)* Updated version batch in README (#121)
+- *(release)* V0.2.3 (#124)
 ## [0.2.2] - 2025-11-30
 
 ### 📚 Documentation
